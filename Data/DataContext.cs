@@ -7,6 +7,7 @@ using RpgApi.Models;
 using RpgApi.Models.Enuns;
 using RpgApi.Utils;
 
+
 namespace RpgApi.Data
 {
     public class DataContext : DbContext

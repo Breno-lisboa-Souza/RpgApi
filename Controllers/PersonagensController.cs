@@ -2,16 +2,23 @@ using Microsoft.AspNetCore.Mvc;
 using RpgApi.Data;
 using RpgApi.Models;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace RpgApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[Controller]")]
     public class PersonagensController : ControllerBase
     {
         
         private readonly DataContext _context; 
+
+        
+
+        
 
         public PersonagensController(DataContext context)
         {
@@ -206,14 +213,15 @@ namespace RpgApi.Controllers
         }
 
 
-        [HttpGet("GetByUser/{userId}")]
-        public async Task<IActionResult> GetByUserAsync(int userId)
+        [HttpGet("GetByUser")]
+        public async Task<IActionResult> GetByUserAsync()
         {
             try
             {
+                int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+
                 List<Personagem> lista = await _context.Personagens
-                            .Where(u => u.Usuario.Id == userId)
-                            .ToListAsync();
+                            .Where(u => u.Usuario.Id == id).ToListAsync();
 
                 return Ok(lista);
             }
